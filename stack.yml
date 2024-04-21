@@ -2,8 +2,7 @@ version: '3.3'
 
 services:
   mqtt_api:
-    build: .
-    image: mqtt_api
+    image: mihail17/mqtt_api
     command: bash -c 'wait-for-service influxdb:8086 && wait-for-service mqtt_broker:1883 && python3 mqtt-api/server.py'
     depends_on:
       - mqtt_broker

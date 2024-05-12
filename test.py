@@ -24,9 +24,9 @@ if __name__ == "__main__":
         station = choice(["RPi_1", "Zeus"])
 
         payload = {
-            "BAT": battery,
-            "HUMID": humidity,
-            "TMP": temperature,
+            "BAT": float(battery),
+            "HUMID": float(humidity),
+            "TMP": float(temperature),
             non_numerical_option: non_numerical_value,
         }
 

@@ -2,9 +2,8 @@ Steps to run:
 
 1. docker swarm init --advertise-addr 127.0.0.1
 2. ./run.sh
-3. python3 mqtt-api/server.py
 4. python3 test.py
-5. populate the grafana by hand
+5. ./down.sh
 
 
 The server.py script appears to be an MQTT message handler that receives messages, 

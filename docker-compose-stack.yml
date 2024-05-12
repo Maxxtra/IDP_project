@@ -1,0 +1,68 @@
+version: '3.3'
+
+services:
+  mqtt_api:
+    image: mihail17/mqtt_api1
+    env_file:
+      - ./.env
+    networks:
+      - api_broker
+      - api_influx
+    deploy:
+      replicas: 1
+
+  
+  mqtt_broker:
+    image: eclipse-mosquitto:2.0-openssl
+    ports:
+      - '1883:1883'
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - api_broker
+    deploy:
+      replicas: 1
+
+  influxdb:
+    image: influxdb:1.8
+    ports:
+      - '8086:8086'
+    volumes:
+      - influxdb_data:/var/lib/influxdb
+    environment:
+      INFLUXDB_DB: influxdb_data_db
+      INFLUXDB_DATA_MAX_SERIES_PER_DATABASE: 0
+      INFLUXDB_COORDINATOR_MAX_SELECT_BUCKETS: 0
+    networks:
+      - api_influx
+      - grafana_influx
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - "node.role==manager"
+
+  mqtt_grafana:
+    image: grafana/grafana:latest
+    ports:
+      - '80:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana:/etc/grafana/provisioning
+    environment:
+      GF_SECURITY_ADMIN_USER: asistent
+      GF_SECURITY_ADMIN_PASSWORD: grafanaSPRC2023
+    networks:
+      - grafana_influx
+      - api_influx
+    deploy:
+      replicas: 1
+
+volumes:
+  influxdb_data: {}
+  grafana_data: {}
+
+networks:
+  api_broker: {}
+  api_influx: {}
+  grafana_influx: {}
